@@ -55,6 +55,7 @@ int main(void) {
     DisplayIsOpen(); /* call */
     DefaultSettings();
     XSetErrorHandler(xerror); /* call */
+    XStoreName(display, DefaultRootWindow(display), "lispm");
 
     change_ws_atom = XInternAtom(display, "CHANGE_WORKSPACE", False);
     move_win_atom = XInternAtom(display, "MOVE_WINDOW", False);
