@@ -1,5 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "bsp.h" /* Manage Window */
@@ -44,6 +45,13 @@ void DefaultSettings(void) {
     sh = DisplayHeight(display, screen);
 }
 
+void EWMH(void) {
+    Window wm_check = XCreateSimpleWindow(display, Window_root, 0, 0, 1, 1, 0, 0, 0);
+    XChangeProperty(display, wm_check, XInternAtom(display, "_NET_SUPPORTING_WM_CHECK", False), XA_WINDOW, 32, PropModeReplace, (unsigned char *)&wm_check, 1);
+    XChangeProperty(display, wm_check, XInternAtom(display, "_NET_WM_NAME", False), XInternAtom(display, "UTF8_STRING", False), 8, PropModeReplace, (unsigned char *)"lispm", 5);
+    XChangeProperty(display, Window_root, XInternAtom(display, "_NET_SUPPORTING_WM_CHECK", False), XA_WINDOW, 32, PropModeReplace, (unsigned char *)&wm_check, 1);
+}
+
 
 /* Entry Point */
 
@@ -56,6 +64,7 @@ int main(void) {
     DefaultSettings();
     XSetErrorHandler(xerror); /* call */
     XStoreName(display, DefaultRootWindow(display), "lispm");
+    EWMH();
 
     change_ws_atom = XInternAtom(display, "CHANGE_WORKSPACE", False);
     move_win_atom = XInternAtom(display, "MOVE_WINDOW", False);
