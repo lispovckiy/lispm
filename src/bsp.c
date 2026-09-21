@@ -4,31 +4,28 @@
 void arrange_bsp(Node *node, int x, int y, int w, int h) {
     if (!node) return;
 
-    if (node == workspaces[current_workspace] && !node->left && !node->right) {
-        if (node->win != 0) {
-	    XMoveResizeWindow(display, node->win,
-			      x + gappx, y + gappx,
-			      w - (2 * gappx), h - (2 * gappx));
-	}
-	return;
-    }
-
-
     node->x = x; node->y = y; node->w = w; node->h = h;
 
     if (!node->left && !node->right && node->win != 0) {
         XMoveResizeWindow(display, node->win, 
                           x + gappx, y + gappx, 
                           w - (2 * gappx), h - (2 * gappx));
-	return;
+        return;
     }
+    
     if (node->left && node->right) {
+        if (node->split_ratio <= 0.05f || node->split_ratio >= 0.95f) {
+            node->split_ratio = 0.5f;
+        }
+
         if (w > h) {
-            arrange_bsp(node->left, x, y, w / 2, h);
-            arrange_bsp(node->right, x + w / 2, y, w / 2, h);
+            int lw = (int)(w * node->split_ratio);
+            arrange_bsp(node->left, x, y, lw, h);
+            arrange_bsp(node->right, x + lw, y, w - lw, h);
         } else {
-            arrange_bsp(node->left, x, y, w, h / 2);
-            arrange_bsp(node->right, x, y + h / 2, w, h / 2);
+            int lh = (int)(h * node->split_ratio);
+            arrange_bsp(node->left, x, y, w, lh);
+            arrange_bsp(node->right, x, y + lh, w, h - lh);
         }
     }
 }
@@ -53,6 +50,7 @@ void insert_window(Window w) {
     if (!leaf) return;
     Node *new_left = calloc(1, sizeof(Node));
     Node *new_right = calloc(1, sizeof(Node));
+    leaf->split_ratio = 0.5f;
     new_left->win = leaf->win;
     new_left->parent = leaf;
     new_right->win = w;

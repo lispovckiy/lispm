@@ -59,6 +59,8 @@ int main(void) {
     change_ws_atom = XInternAtom(display, "CHANGE_WORKSPACE", False);
     move_win_atom = XInternAtom(display, "MOVE_WINDOW", False);
     Atom close_window_atom = XInternAtom(display, "CLOSE_WINDOW", False);
+    Atom resize_window_atom = XInternAtom(display, "RESIZE_WINDOW", False);
+
 
     XSelectInput(display, Window_root, SubstructureRedirectMask | SubstructureNotifyMask);
 
@@ -88,6 +90,21 @@ int main(void) {
 			}
 
                 }
+
+		if (ev.xclient.message_type == resize_window_atom) {
+		    Window focus;
+		    int revert_to;
+		    XGetInputFocus(display, &focus, &revert_to);
+		    if (focus != None && focus != Window_root) {
+			Node *leaf = find_node_by_win(workspaces[current_workspace], focus);
+			if (leaf && leaf->parent) {
+			   float delta = (float)ev.xclient.data.l[0] / 100.0f;
+			   leaf->parent->split_ratio += delta;
+			   arrange_bsp(workspaces[current_workspace], 0, 0, sw, sh);
+			}
+		    }
+
+		}
 
 		else if (ev.xclient.message_type == move_win_atom) {
 		    int target = ev.xclient.data.l[0];

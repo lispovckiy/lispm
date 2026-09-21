@@ -24,9 +24,13 @@ int main(int argc, char *argv[]) {
     } else if (argc >= 3 && strcmp(argv[1], "move") == 0) {
         ev.xclient.data.l[0] = atol(argv[2]);
         ev.xclient.message_type = XInternAtom(display, "MOVE_WINDOW", False);
+    } else if (strcmp(argv[1], "resize") == 0 && argc >= 3) {
+	float delta = atof(argv[2]);
+	ev.xclient.data.l[0] = (long)(delta * 100);
+	ev.xclient.message_type = XInternAtom(display, "RESIZE_WINDOW", False);
     } else {
-        XCloseDisplay(display);
-        return 1;
+	XCloseDisplay(display);
+	return 1;
     }
 
     XSendEvent(display, root, False, SubstructureNotifyMask, &ev);

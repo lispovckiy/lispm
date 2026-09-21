@@ -11,6 +11,7 @@ typedef struct Node {
     struct Node *left;
     struct Node *right;
     struct Node *parent;
+    float split_ratio;
 } Node;
 
 extern int sw, sh;
@@ -27,7 +28,7 @@ void view_workspace(int ws);
 void move_window_to_workspace(Window w, int workspace_index); 
 void hide_node(Node *node);
 void show_node(Node *node);
-
+Node* find_node_by_win(Node *node, Window w);
 
 
 #endif
