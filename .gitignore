@@ -1,0 +1,4 @@
+lispm
+lispmc
+src/*.o
+.DS_Store
