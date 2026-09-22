@@ -67,8 +67,42 @@ handle_client_message(XClientMessageEvent *cme) {
         XGetInputFocus(display, &focus, &revert_to);
 
         if (focus != None && focus != Window_root) {
-            remove_window(Window_root);
-            XKillClient(display, focus);
+            Atom wm_protocols = XInternAtom(display, "WM_PROTOCOLS", False);
+            Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
+            Atom *protocols = NULL;
+            int n = 0;
+            int supports_delete = 0;
+
+            if (XGetWMProtocols(display, focus, &protocols, &n)) {
+                while (n--) {
+                    if (protocols[n] == wm_delete_window) {
+                        supports_delete = 1;
+                        break;
+                    }
+                }
+                if (protocols) {
+                    XFree(protocols);
+                }
+            }
+
+            if (supports_delete) {
+                XEvent ev;
+                ev.type = ClientMessage;
+                ev.xclient.window = focus;
+                ev.xclient.message_type = wm_protocols;
+                ev.xclient.format = 32;
+                ev.xclient.data.l[0] = wm_delete_window;
+                ev.xclient.data.l[1] = CurrentTime;
+
+
+                XSendEvent(display, focus, False, NoEventMask, &ev);
+            } else {
+                XKillClient(display, focus);
+            }
+
+            XFlush(display);
+            remove_window(focus);
+
 
             if (workspaces[current_workspace]) {
                 arrange_bsp(workspaces[current_workspace], 0, 0, sw, sh);
