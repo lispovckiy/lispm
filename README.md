@@ -53,7 +53,7 @@ super + shift + {1,2}
 super + mod1 + {h,l}
     lispmc resize {-0.05,+0.05}
 
-
+# Fullscreen focused Window
 super + f
     lispmc fullscreen
 
