@@ -4,7 +4,7 @@ INCS    = -I/usr/include -I/usr/X11R6/include -Isrc/include
 LIBS    = -L/usr/lib -L/usr/X11R6/lib -lX11
 CFLAGS  = -Wall -Wextra -O3 -march=native -fomit-frame-pointer ${INCS}
 LDFLAGS = ${LIBS}
-OBJ     = src/lispm.o src/bsp.o
+OBJ     = src/lispm.o src/bsp.o src/handle_client_message.o
 BIN     = lispm lispmc
 all: ${BIN}
 lispm: ${OBJ}
