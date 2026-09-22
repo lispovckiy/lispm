@@ -17,7 +17,7 @@ Atom change_ws_atom;
 Atom move_win_atom;
 Atom close_window_atom;
 Atom resize_window_atom;
-
+Atom net_wm_fullscreen;
 
 
 Node *workspaces[WORKSPACES] = {NULL};
@@ -81,7 +81,7 @@ main(void)
     move_win_atom = XInternAtom(display, "MOVE_WINDOW", False);
     close_window_atom = XInternAtom(display, "CLOSE_WINDOW", False);
     resize_window_atom = XInternAtom(display, "RESIZE_WINDOW", False);
-
+    net_wm_fullscreen = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", False);
     void handle_client_message(XClientMessageEvent *cme);
 
 

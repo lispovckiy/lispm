@@ -1,18 +1,27 @@
 #include <stdlib.h>
 #include "bsp.h"
 
+
 void arrange_bsp(Node *node, int x, int y, int w, int h) {
     if (!node) return;
+
+    if (node->is_fullscreen) {
+        XMoveResizeWindow(display, node->win, 0, 0, sw, sh);
+        XRaiseWindow(display, node->win);
+
+        node->x = 0; node->y = 0; node->w = sw; node->h = sh;
+        return;
+    }
 
     node->x = x; node->y = y; node->w = w; node->h = h;
 
     if (!node->left && !node->right && node->win != 0) {
-        XMoveResizeWindow(display, node->win, 
-                          x + gappx, y + gappx, 
+        XMoveResizeWindow(display, node->win,
+                          x + gappx, y + gappx,
                           w - (2 * gappx), h - (2 * gappx));
         return;
     }
-    
+
     if (node->left && node->right) {
         if (node->split_ratio <= 0.05f || node->split_ratio >= 0.95f) {
             node->split_ratio = 0.5f;
@@ -34,7 +43,7 @@ Node* find_leaf(Node *node, int w, int h) {
     if (!node) return NULL;
     if (!node->left && !node->right) return node;
     if (w > h) {
-        return find_leaf(node->left, w / 2, h); 
+        return find_leaf(node->left, w / 2, h);
     } else {
         return find_leaf(node->left, w, h / 2);
     }
@@ -44,7 +53,7 @@ void insert_window(Window w) {
     if (!workspaces[current_workspace]) {
         workspaces[current_workspace] = calloc(1, sizeof(Node));
         workspaces[current_workspace]->win = w;
-        return; 
+        return;
     }
     Node *leaf = find_leaf(workspaces[current_workspace], sw, sh);
     if (!leaf) return;
@@ -64,7 +73,7 @@ void insert_window(Window w) {
 Node* find_node_by_win(Node *node, Window w) {
     if (!node) return NULL;
     if (node->win == w) return node;
-    
+
     Node *found = find_node_by_win(node->left, w);
     if (found) return found;
     return find_node_by_win(node->right, w);
@@ -97,7 +106,7 @@ void remove_window(Window w) {
 void show_node(Node *node) {
     if (!node) return;
     if (node->win != 0) {
-        XMapWindow(display, node->win); 
+        XMapWindow(display, node->win);
     }
     show_node(node->left);
     show_node(node->right);

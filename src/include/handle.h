@@ -2,6 +2,7 @@
 #define BSP_H
 
 #include <X11/Xlib.h>
+#include <stdbool.h>
 
 #define WORKSPACES 9
 
@@ -12,6 +13,7 @@ typedef struct Node {
     struct Node *right;
     struct Node *parent;
     float split_ratio;
+    bool is_fullscreen;
 } Node;
 
 extern int sw, sh;
@@ -24,6 +26,7 @@ extern Atom move_win_atom;
 extern Atom close_window_atom;
 extern Atom resize_window_atom;
 extern Window Window_root;
+extern Atom net_wm_fullscreen;
 
 void
 handle_client_message(XClientMessageEvent *cme);

@@ -83,6 +83,25 @@ handle_client_message(XClientMessageEvent *cme) {
             arrange_bsp(workspaces[current_workspace], 0, 0, sw, sh);
             XSync(display, False);
         }
+    } else if (cme->message_type == net_wm_fullscreen) {
+        Window focus;
+        int revert;
+        XGetInputFocus(display, &focus, &revert);
+
+        if (focus != None && focus != Window_root) {
+            Node *leaf = find_node_by_win(workspaces[current_workspace], focus);
+            if (leaf) {
+                leaf->is_fullscreen = !leaf->is_fullscreen;
+
+                if (leaf->is_fullscreen) {
+                    XMoveResizeWindow(display, focus, 0, 0, sw, sh);
+                    XRaiseWindow(display, focus);
+                } else {
+                    arrange_bsp(workspaces[current_workspace], 0, 0, sw, sh);
+                }
+                XSync(display, False);
+            }
+        }
     }
 }
 

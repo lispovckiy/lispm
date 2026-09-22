@@ -2,7 +2,7 @@
 #define BSP_H
 
 #include <X11/Xlib.h>
-
+#include <stdbool.h>
 #define WORKSPACES 9
 
 typedef struct Node {
@@ -12,6 +12,7 @@ typedef struct Node {
     struct Node *right;
     struct Node *parent;
     float split_ratio;
+    bool is_fullscreen;
 } Node;
 
 extern int sw, sh;
@@ -25,7 +26,7 @@ void arrange_bsp(Node *node, int x, int y, int w, int h);
 void insert_window(Window w);
 void remove_window(Window w);
 void view_workspace(int ws);
-void move_window_to_workspace(Window w, int workspace_index); 
+void move_window_to_workspace(Window w, int workspace_index);
 void hide_node(Node *node);
 void show_node(Node *node);
 Node* find_node_by_win(Node *node, Window w);

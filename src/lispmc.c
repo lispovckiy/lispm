@@ -4,13 +4,13 @@
 #include <string.h>
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) return 1; 
+    if (argc < 2) return 1;
     Display *display = XOpenDisplay(NULL);
     if (!display) return 1;
 
     Window root = DefaultRootWindow(display);
     XEvent ev;
-    memset(&ev, 0, sizeof(ev)); 
+    memset(&ev, 0, sizeof(ev));
 
     ev.xclient.type = ClientMessage;
     ev.xclient.window = root;
@@ -28,9 +28,12 @@ int main(int argc, char *argv[]) {
 	float delta = atof(argv[2]);
 	ev.xclient.data.l[0] = (long)(delta * 100);
 	ev.xclient.message_type = XInternAtom(display, "RESIZE_WINDOW", False);
+    } else if (strcmp(argv[1], "fullscreen") == 0) {
+        ev.xclient.data.l[0] = 0;
+        ev.xclient.message_type = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", False);
     } else {
-	XCloseDisplay(display);
-	return 1;
+	    XCloseDisplay(display);
+	    return 1;
     }
 
     XSendEvent(display, root, False, SubstructureNotifyMask, &ev);
