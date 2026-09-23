@@ -18,10 +18,11 @@ static void
 no_arguments(void);
 Commands cmds[] = {
     { "close",      2, "CLOSE_WINDOW",             NULL             },
-    { "fullscreen", 2, "_NET_WM_STATE_FULLSCREEN",  NULL             },
+    { "fullscreen", 2, "_NET_WM_STATE_FULLSCREEN",  NULL            },
     { "view",       3, "CHANGE_WORKSPACE",         handle_view_move },
     { "move",       3, "MOVE_WINDOW",              handle_view_move },
-    { "resize",     3, "RESIZE_WINDOW",            handle_resize    }
+    { "resize",     3, "RESIZE_WINDOW",            handle_resize    },
+    { "float",      2, "TOGGLE_FLOATING",          NULL             }
 };
 
 static Display*

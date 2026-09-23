@@ -101,7 +101,28 @@ handle_client_message(XClientMessageEvent *cme) {
                 }
                 XSync(display, False);
             }
+            }
+        } else if (cme->message_type == floating_atom) {
+            Window focus;
+            int revert;
+            XGetInputFocus(display, &focus, &revert);
+            if (focus != None && focus != Window_root) {
+                Node *leaf = find_node_by_win(workspaces[current_workspace], focus);
+                if (leaf) {
+                    leaf->is_floating = !leaf->is_floating;
+
+                    if (leaf->is_floating) {
+                        int fw = 800, fh = 600;
+                        int fx = (sw - fw) / 2, fy = (sh -fh) / 2;
+
+                        XMoveResizeWindow(display, focus, fx, fy, fw, fh);
+                        XRaiseWindow(display, focus);
+                    } else {
+                        arrange_bsp(workspaces[current_workspace], 0, 0, sw, sh);
+                    }
+                    XSync(display, False);
+                }
+            }
         }
-    }
 }
 

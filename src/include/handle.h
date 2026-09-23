@@ -14,6 +14,7 @@ typedef struct Node {
     struct Node *parent;
     float split_ratio;
     bool is_fullscreen;
+    bool is_floating;
 } Node;
 
 extern int sw, sh;
@@ -27,7 +28,7 @@ extern Atom close_window_atom;
 extern Atom resize_window_atom;
 extern Window Window_root;
 extern Atom net_wm_fullscreen;
-
+extern Atom floating_atom;
 void
 handle_client_message(XClientMessageEvent *cme);
 void arrange_bsp(Node *node, int x, int y, int w, int h);

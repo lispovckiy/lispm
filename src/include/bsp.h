@@ -13,6 +13,7 @@ typedef struct Node {
     struct Node *parent;
     float split_ratio;
     bool is_fullscreen;
+    bool is_floating
 } Node;
 
 extern int sw, sh;

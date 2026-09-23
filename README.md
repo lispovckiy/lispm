@@ -57,6 +57,10 @@ super + mod1 + {h,l}
 super + f
     lispmc fullscreen
 
+# Float focused Window
+super + shift + f
+    lispmc float
+
 # Close focused window
 super + q
     lispmc close

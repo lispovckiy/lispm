@@ -5,6 +5,10 @@
 void arrange_bsp(Node *node, int x, int y, int w, int h) {
     if (!node) return;
 
+    if (node->is_floating && node->win != 0) {
+        XRaiseWindow(display, node->win);
+        return;
+    }
     if (node->is_fullscreen) {
         XMoveResizeWindow(display, node->win, 0, 0, sw, sh);
         XRaiseWindow(display, node->win);
