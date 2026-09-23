@@ -88,11 +88,13 @@ void handle_resize(XEvent *ev, int argc, char **argv) {
 static void
 no_arguments(void)
 {
-    fprintf(stderr, "lispmc: no arguments\n");
-    fprintf(stderr, "arguments: \n");
-    fprintf(stderr, "1. view \n");
-    fprintf(stderr, "2. move\n");
-    fprintf(stderr, "3. resize\n");
-    fprintf(stderr, "4. fullscreen\n");
-    fprintf(stderr, "5. close\n");
+    fprintf(stderr, "lispmc: no or invalid arguments\n");
+    fprintf(stderr, "available commands: \n");
+
+    int count = sizeof(cmds) / sizeof(cmds[0]);
+
+    for (int i = 0; i < count; i++)
+    {
+        fprintf(stderr, " %d %s\n", i + 1, cmds[i].name);
+    }
 }
