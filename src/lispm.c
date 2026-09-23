@@ -19,7 +19,7 @@ Atom close_window_atom;
 Atom resize_window_atom;
 Atom net_wm_fullscreen;
 Atom floating_atom;
-
+Atom net_current_desktop;
 
 Node *workspaces[WORKSPACES] = {NULL};
 int current_workspace = 0;
@@ -84,9 +84,14 @@ main(void)
     resize_window_atom = XInternAtom(display, "RESIZE_WINDOW", False);
     net_wm_fullscreen = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", False);
     floating_atom     = XInternAtom(display, "TOGGLE_FLOATING",          False);
+    Atom net_number_of_desktops = XInternAtom(display, "_NET_NUMBER_OF_DESKTOPS", False);
+    net_current_desktop = XInternAtom(display, "_NET_CURRENT_DESKTOP", False);
+
     void handle_client_message(XClientMessageEvent *cme);
 
-
+    long num_workspaces = 9;
+    XChangeProperty(display, Window_root, net_number_of_desktops, XA_CARDINAL, 32,
+                PropModeReplace, (unsigned char *)&num_workspaces, 1);
 
     XSelectInput(display, Window_root, SubstructureRedirectMask | SubstructureNotifyMask);
 
@@ -102,6 +107,24 @@ main(void)
                 XWindowAttributes wa;
                 XGetWindowAttributes(display, w, &wa);
                 if (wa.override_redirect) break;
+
+                Atom actual_type;
+                int actual_format;
+                unsigned long nitems, bytes_after;
+                unsigned char *prop = NULL;
+                Atom net_wm_window_type = XInternAtom(display, "_NET_WM_WINDOW_TYPE", False);
+                Atom net_wm_window_type_dock = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DOCK", False);
+               if (XGetWindowProperty(display, w, net_wm_window_type, 0, sizeof(Atom), False,
+                                       XA_ATOM, &actual_type, &actual_format, &nitems, &bytes_after, &prop) == Success && prop) {
+                    Atom type = *(Atom *)prop;
+                    XFree(prop);
+
+                    if (type == net_wm_window_type_dock) {
+                        XMapWindow(display, w);
+                        break;
+                    }
+                }
+
 
                 insert_window(w);
                 XMapWindow(display, w);

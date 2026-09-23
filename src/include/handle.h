@@ -3,6 +3,7 @@
 
 #include <X11/Xlib.h>
 #include <stdbool.h>
+#include <X11/Xatom.h>
 
 #define WORKSPACES 9
 
@@ -29,6 +30,7 @@ extern Atom resize_window_atom;
 extern Window Window_root;
 extern Atom net_wm_fullscreen;
 extern Atom floating_atom;
+extern Atom net_current_desktop;
 void
 handle_client_message(XClientMessageEvent *cme);
 void arrange_bsp(Node *node, int x, int y, int w, int h);

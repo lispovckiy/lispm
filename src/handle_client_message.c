@@ -1,5 +1,5 @@
 #include "handle.h"
-
+#include <X11/Xatom.h>
 
 
 void
@@ -10,6 +10,11 @@ handle_client_message(XClientMessageEvent *cme) {
         int target = cme->data.l[0];
         view_workspace(target);
         arrange_bsp(workspaces[current_workspace], 0, 0, sw, sh);
+
+        long current_ws_long = (long)target;
+        XChangeProperty(display, Window_root, net_current_desktop, XA_CARDINAL, 32,
+        PropModeReplace, (unsigned char *)&current_ws_long, 1);
+
         XSync(display, False);
 
     } else if (cme->message_type == close_window_atom) {
