@@ -37,7 +37,8 @@ Configuration should be managed via an external hotkey daemon such as `sxhkd`.
 * Move window to workspace: `lispmc move <workspace_index>`
 * Resize layout: `lispmc resize <float_delta>`
 * Close focused window: `lispmc close`
-
+* Fullscreen focused Window: `lispmc fullscreen`
+* Float focused Window: `lispmc float`
 ### Configuration Example (`sxhkdrc`)
 
 ```text
