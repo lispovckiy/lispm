@@ -39,6 +39,7 @@ Configuration should be managed via an external hotkey daemon such as `sxhkd`.
 * Close focused window: `lispmc close`
 * Fullscreen focused Window: `lispmc fullscreen`
 * Float focused Window: `lispmc float`
+* Move Float Window: `lispmc move-float`
 ### Configuration Example (`sxhkdrc`)
 
 ```text
@@ -65,5 +66,9 @@ super + shift + f
 # Close focused window
 super + q
     lispmc close
+
+# Move Float Window
+super + ctrl + {h,j,k,l}
+    lispmc move-float {-20 0, 0 20, 0 -20, 20 0}
 ```
 

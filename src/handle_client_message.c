@@ -4,6 +4,8 @@
 
 void
 handle_client_message(XClientMessageEvent *cme) {
+    Atom move_float_atom;
+    move_float_atom = XInternAtom(display, "MOVE_FLOATING_WINDOW", False);
     if (cme->message_type == change_ws_atom) {
         int target = cme->data.l[0];
         view_workspace(target);
@@ -120,6 +122,21 @@ handle_client_message(XClientMessageEvent *cme) {
                     } else {
                         arrange_bsp(workspaces[current_workspace], 0, 0, sw, sh);
                     }
+                    XSync(display, False);
+                }
+            }
+        } else if (cme->message_type == move_float_atom) {
+            Window focus;
+            int revert;
+            XGetInputFocus(display, &focus, &revert);
+            if (focus != None && focus != Window_root) {
+                Node *leaf = find_node_by_win(workspaces[current_workspace], focus);
+                if (leaf && leaf->is_floating) {
+                    int delta_x = cme->data.l[0], delta_y = cme->data.l[1];
+                    leaf->x += delta_x;
+                    leaf->y += delta_y;
+
+                    XMoveWindow(display, focus, leaf->x, leaf->y);
                     XSync(display, False);
                 }
             }

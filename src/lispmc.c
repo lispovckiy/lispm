@@ -16,13 +16,16 @@ static void
 handle_resize(XEvent *ev, int argc, char **argv);
 static void
 no_arguments(void);
+static void
+handle_move_float(XEvent *ev, int argc, char **argv);
 Commands cmds[] = {
     { "close",      2, "CLOSE_WINDOW",             NULL             },
     { "fullscreen", 2, "_NET_WM_STATE_FULLSCREEN",  NULL            },
     { "view",       3, "CHANGE_WORKSPACE",         handle_view_move },
     { "move",       3, "MOVE_WINDOW",              handle_view_move },
     { "resize",     3, "RESIZE_WINDOW",            handle_resize    },
-    { "float",      2, "TOGGLE_FLOATING",          NULL             }
+    { "float",      2, "TOGGLE_FLOATING",          NULL             },
+    { "move-float", 4, "MOVE_FLOATING_WINDOW",     handle_move_float}
 };
 
 static Display*
@@ -98,4 +101,11 @@ no_arguments(void)
     {
         fprintf(stderr, " %d %s\n", i + 1, cmds[i].name);
     }
+}
+static void
+handle_move_float(XEvent *ev, int argc, char **argv)
+{
+    (void)argc;
+    ev->xclient.data.l[0] = atol(argv[2]);
+    ev->xclient.data.l[1] = atol(argv[3]);
 }
