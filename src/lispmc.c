@@ -10,11 +10,12 @@ typedef struct {
     void (*handler)(XEvent *ev, int argc, char **argv);
 } Commands;
 
-void
+static void
 handle_view_move(XEvent *ev, int argc, char **argv);
-void
+static void
 handle_resize(XEvent *ev, int argc, char **argv);
-
+static void
+no_arguments(void);
 Commands cmds[] = {
     { "close",      2, "CLOSE_WINDOW",             NULL             },
     { "fullscreen", 2, "_NET_WM_STATE_FULLSCREEN",  NULL             },
@@ -36,7 +37,7 @@ OpenDisplay(void)
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) { /* TODO: make a help */ return 1; }
+    if (argc < 2) { no_arguments(); return 1; }
     Display *dis = OpenDisplay();
     Window root = DefaultRootWindow(dis);
     int num_cmds = sizeof(cmds) / sizeof(cmds[0]);
@@ -66,6 +67,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (!found) {
+        no_arguments();
         XCloseDisplay(dis);
         return 1;
     }
@@ -82,4 +84,15 @@ void handle_view_move(XEvent *ev, int argc, char **argv) {
 void handle_resize(XEvent *ev, int argc, char **argv) {
     float delta = atof(argv[2]);
     ev->xclient.data.l[0] = (long)(delta * 100);
+}
+static void
+no_arguments(void)
+{
+    fprintf(stderr, "lispmc: no arguments\n");
+    fprintf(stderr, "arguments: \n");
+    fprintf(stderr, "1. view \n");
+    fprintf(stderr, "2. move\n");
+    fprintf(stderr, "3. resize\n");
+    fprintf(stderr, "4. fullscreen\n");
+    fprintf(stderr, "5. close\n");
 }
